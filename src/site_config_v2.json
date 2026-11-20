@@ -1,0 +1,47 @@
+{
+  "site_metadata": {
+    "site_id": "FP-TOWER-SEA-01",
+    "operator_organization": "Revolutionary Technology Company",
+    "installation_date_utc": "2026-11-20",
+    "installer_name": "Field Technician Name",
+    "fcc_callsign_or_file_num": "PENDING_FORM_442"
+  },
+  "geographic_coordinates_nad83": {
+    "latitude_decimal": 47.6062,
+    "longitude_decimal": -122.3321,
+    "latitude_dms": "47°36'22.3\"N",
+    "longitude_dms": "122°19'55.6\"W",
+    "ground_elevation_amsl_m": 56.0
+  },
+  "tower_and_mounting": {
+    "tower_structure_type": "FireProve Drone Telemetry Lattice Tower",
+    "overall_tower_height_agl_m": 24.5,
+    "radar_radiation_center_agl_m": 22.0,
+    "mast_outer_diameter_mm": 50.8,
+    "faa_notification_required": false,
+    "nearest_airport_icao": "KSEA",
+    "distance_to_nearest_runway_km": 18.4
+  },
+  "hardware_and_power_scaling": {
+    "center_freq_ghz": 10.525,
+    "dish_diameter_m": 1.2,
+    "tx_power_watts": 25.0,
+    "ac_mains_volts": 520.0,
+    "ac_phases": 3,
+    "pa_efficiency": 0.35,
+    "aperture_efficiency": 0.55
+  },
+  "antenna_alignment": {
+    "azimuth_true_north_deg": 270.0,
+    "elevation_tilt_deg": 15.0,
+    "polarization": "Linear Vertical",
+    "sector_blanking_enabled": true,
+    "blanked_azimuth_start_deg": 85.0,
+    "blanked_azimuth_end_deg": 115.0
+  },
+  "operational_limits": {
+    "duty_cycle_percent": 100.0,
+    "operating_schedule": "24/7 Continuous Weather Telemetry",
+    "emergency_rf_kill_switch_gpio": 17
+  }
+}
