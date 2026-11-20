@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org",
+  "$id": "https://revolutionary.technology",
+  "title": "RT-Hex Doppler Radar Installer Site Configuration",
+  "description": "Validates physical tower dimensions, NAD83 coordinates, and FCC Part 5 operational limits.",
+  "type": "object",
+  "required": [
+    "site_metadata",
+    "geographic_coordinates_nad83",
+    "tower_and_mounting",
+    "antenna_alignment",
+    "operational_limits"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "site_metadata": {
+      "type": "object",
+      "required": [
+        "site_id",
+        "operator_organization",
+        "installation_date_utc",
+        "installer_name",
+        "fcc_callsign_or_file_num"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "site_id": {
+          "type": "string",
+          "pattern": "^[A-Z0-9-]+$",
+          "description": "Unique alphanumeric tower identifier (e.g., FP-TOWER-SEA-01)"
+        },
+        "operator_organization": {
+          "type": "string",
+          "minLength": 2
+        },
+        "installation_date_utc": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 date (YYYY-MM-DD)"
+        },
+        "installer_name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "fcc_callsign_or_file_num": {
+          "type": "string",
+          "minLength": 3
+        }
+      }
+    },
+    "geographic_coordinates_nad83": {
+      "type": "object",
+      "required": [
+        "latitude_decimal",
+        "longitude_decimal",
+        "latitude_dms",
+        "longitude_dms",
+        "ground_elevation_amsl_m"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "latitude_decimal": {
+          "type": "number",
+          "minimum": -90.0,
+          "maximum": 90.0,
+          "description": "NAD83 decimal latitude (-90 to +90)"
+        },
+        "longitude_decimal": {
+          "type": "number",
+          "minimum": -180.0,
+          "maximum": 180.0,
+          "description": "NAD83 decimal longitude (-180 to +180)"
+        },
+        "latitude_dms": {
+          "type": "string",
+          "pattern": "^\\d{1,2}°\\d{1,2}'\\d{1,2}(\\.\\d+)?\"[NS]$"
+        },
+        "longitude_dms": {
+          "type": "string",
+          "pattern": "^\\d{1,3}°\\d{1,2}'\\d{1,2}(\\.\\d+)?\"[EW]$"
+        },
+        "ground_elevation_amsl_m": {
+          "type": "number",
+          "minimum": -100.0,
+          "maximum": 6000.0,
+          "description": "Ground elevation Above Mean Sea Level in meters"
+        }
+      }
+    },
+    "tower_and_mounting": {
+      "type": "object",
+      "required": [
+        "tower_structure_type",
+        "overall_tower_height_agl_m",
+        "radar_radiation_center_agl_m",
+        "mast_outer_diameter_mm",
+        "faa_notification_required",
+        "nearest_airport_icao",
+        "distance_to_nearest_runway_km"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tower_structure_type": {
+          "type": "string",
+          "minLength": 3
+        },
+        "overall_tower_height_agl_m": {
+          "type": "number",
+          "exclusiveMinimum": 0.0,
+          "maximum": 600.0,
+          "description": "Total tower height Above Ground Level in meters"
+        },
+        "radar_radiation_center_agl_m": {
+          "type": "number",
+          "exclusiveMinimum": 0.0,
+          "maximum": 600.0,
+          "description": "Height of parabolic dish center Above Ground Level in meters"
+        },
+        "mast_outer_diameter_mm": {
+          "type": "number",
+          "minimum": 25.0,
+          "maximum": 200.0,
+          "description": "Outer diameter of mounting pipe in millimeters (used by OpenSCAD)"
+        },
+        "faa_notification_required": {
+          "type": "boolean"
+        },
+        "nearest_airport_icao": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{3,4}$"
+        },
+        "distance_to_nearest_runway_km": {
+          "type": "number",
+          "minimum": 0.0
+        }
+      }
+    },
+    "antenna_alignment": {
+      "type": "object",
+      "required": [
+        "azimuth_true_north_deg",
+        "elevation_tilt_deg",
+        "polarization",
+        "sector_blanking_enabled",
+        "blanked_azimuth_start_deg",
+        "blanked_azimuth_end_deg"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "azimuth_true_north_deg": {
+          "type": "number",
+          "minimum": 0.0,
+          "exclusiveMaximum": 360.0
+        },
+        "elevation_tilt_deg": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 90.0,
+          "description": "Vertical tilt angle above horizon (0 = horizontal, 90 = zenith)"
+        },
+        "polarization": {
+          "type": "string",
+          "enum": ["Linear Vertical", "Linear Horizontal", "Circular RHCP", "Circular LHCP"]
+        },
+        "sector_blanking_enabled": {
+          "type": "boolean"
+        },
+        "blanked_azimuth_start_deg": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 360.0
+        },
+        "blanked_azimuth_end_deg": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 360.0
+        }
+      }
+    },
+    "operational_limits": {
+      "type": "object",
+      "required": [
+        "max_tx_power_dbm",
+        "duty_cycle_percent",
+        "operating_schedule",
+        "emergency_rf_kill_switch_gpio"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "max_tx_power_dbm": {
+          "type": "number",
+          "minimum": -10.0,
+          "maximum": 20.0,
+          "description": "Hard-capped at 20.0 dBm (100 mW) to match FCC Form 442 exhibit"
+        },
+        "duty_cycle_percent": {
+          "type": "number",
+          "exclusiveMinimum": 0.0,
+          "maximum": 100.0
+        },
+        "operating_schedule": {
+          "type": "string",
+          "minLength": 5
+        },
+        "emergency_rf_kill_switch_gpio": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40
+        }
+      }
+    }
+  }
+}
