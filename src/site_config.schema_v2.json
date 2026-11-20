@@ -1,0 +1,266 @@
+{
+  "$schema": "http://json-schema.org",
+  "$id": "https://revolutionary.technology",
+  "title": "RT-Hex Doppler Radar Installer Site Configuration",
+  "description": "Validates physical tower dimensions, NAD83 coordinates, dynamic scaling parameters, and FCC Part 5 limits.",
+  "type": "object",
+  "required": [
+    "site_metadata",
+    "geographic_coordinates_nad83",
+    "tower_and_mounting",
+    "hardware_and_power_scaling",
+    "antenna_alignment",
+    "operational_limits"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "site_metadata": {
+      "type": "object",
+      "required": [
+        "site_id",
+        "operator_organization",
+        "installation_date_utc",
+        "installer_name",
+        "fcc_callsign_or_file_num"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "site_id": {
+          "type": "string",
+          "pattern": "^[A-Z0-9-]+$",
+          "description": "Unique alphanumeric tower identifier (e.g., FP-TOWER-SEA-01)"
+        },
+        "operator_organization": {
+          "type": "string",
+          "minLength": 2
+        },
+        "installation_date_utc": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 date (YYYY-MM-DD)"
+        },
+        "installer_name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "fcc_callsign_or_file_num": {
+          "type": "string",
+          "minLength": 3
+        }
+      }
+    },
+    "geographic_coordinates_nad83": {
+      "type": "object",
+      "required": [
+        "latitude_decimal",
+        "longitude_decimal",
+        "latitude_dms",
+        "longitude_dms",
+        "ground_elevation_amsl_m"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "latitude_decimal": {
+          "type": "number",
+          "minimum": -90.0,
+          "maximum": 90.0
+        },
+        "longitude_decimal": {
+          "type": "number",
+          "minimum": -180.0,
+          "maximum": 180.0
+        },
+        "latitude_dms": {
+          "type": "string",
+          "pattern": "^\\d{1,2}°\\d{1,2}'\\d{1,2}(\\.\\d+)?\"[NS]$"
+        },
+        "longitude_dms": {
+          "type": "string",
+          "pattern": "^\\d{1,3}°\\d{1,2}'\\d{1,2}(\\.\\d+)?\"[EW]$"
+        },
+        "ground_elevation_amsl_m": {
+          "type": "number",
+          "minimum": -100.0,
+          "maximum": 6000.0
+        }
+      }
+    },
+    "tower_and_mounting": {
+      "type": "object",
+      "required": [
+        "tower_structure_type",
+        "overall_tower_height_agl_m",
+        "radar_radiation_center_agl_m",
+        "mast_outer_diameter_mm",
+        "faa_notification_required",
+        "nearest_airport_icao",
+        "distance_to_nearest_runway_km"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tower_structure_type": {
+          "type": "string",
+          "minLength": 3
+        },
+        "overall_tower_height_agl_m": {
+          "type": "number",
+          "exclusiveMinimum": 0.0,
+          "maximum": 600.0
+        },
+        "radar_radiation_center_agl_m": {
+          "type": "number",
+          "exclusiveMinimum": 0.0,
+          "maximum": 600.0
+        },
+        "mast_outer_diameter_mm": {
+          "type": "number",
+          "minimum": 25.0,
+          "maximum": 300.0
+        },
+        "faa_notification_required": {
+          "type": "boolean"
+        },
+        "nearest_airport_icao": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{3,4}$"
+        },
+        "distance_to_nearest_runway_km": {
+          "type": "number",
+          "minimum": 0.0
+        }
+      }
+    },
+    "hardware_and_power_scaling": {
+      "type": "object",
+      "required": [
+        "center_freq_ghz",
+        "dish_diameter_m",
+        "tx_power_watts",
+        "ac_mains_volts",
+        "ac_phases",
+        "pa_efficiency",
+        "aperture_efficiency"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "center_freq_ghz": {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 40.0,
+          "description": "Operating center frequency in GHz (default 10.525 GHz X-Band)"
+        },
+        "dish_diameter_m": {
+          "type": "number",
+          "minimum": 0.3,
+          "maximum": 5.0,
+          "description": "Parabolic reflector diameter in meters (0.3m to 5.0m)"
+        },
+        "tx_power_watts": {
+          "type": "number",
+          "exclusiveMinimum": 0.0,
+          "maximum": 10000.0,
+          "description": "Transmitter RF output power in Watts (0.1W to 10,000W)"
+        },
+        "ac_mains_volts": {
+          "type": "number",
+          "minimum": 110.0,
+          "maximum": 600.0,
+          "description": "Site AC supply voltage (e.g., 240V single-phase, 480V/510V/520V three-phase)"
+        },
+        "ac_phases": {
+          "type": "integer",
+          "enum":,
+          "description": "AC electrical phase count (1 for 120V/240V, 3 for 480V/510V/520V)"
+        },
+        "pa_efficiency": {
+          "type": "number",
+          "exclusiveMinimum": 0.05,
+          "maximum": 0.95,
+          "description": "RF Power Amplifier drain efficiency (default 0.35)"
+        },
+        "aperture_efficiency": {
+          "type": "number",
+          "exclusiveMinimum": 0.2,
+          "maximum": 0.85,
+          "description": "Parabolic dish illumination efficiency (default 0.55)"
+        }
+      },
+      "if": {
+        "properties": {
+          "ac_mains_volts": { "exclusiveMinimum": 250.0 }
+        }
+      },
+      "then": {
+        "properties": {
+          "ac_phases": { "const": 3 }
+        }
+      }
+    },
+    "antenna_alignment": {
+      "type": "object",
+      "required": [
+        "azimuth_true_north_deg",
+        "elevation_tilt_deg",
+        "polarization",
+        "sector_blanking_enabled",
+        "blanked_azimuth_start_deg",
+        "blanked_azimuth_end_deg"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "azimuth_true_north_deg": {
+          "type": "number",
+          "minimum": 0.0,
+          "exclusiveMaximum": 360.0
+        },
+        "elevation_tilt_deg": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 90.0
+        },
+        "polarization": {
+          "type": "string",
+          "enum": ["Linear Vertical", "Linear Horizontal", "Circular RHCP", "Circular LHCP"]
+        },
+        "sector_blanking_enabled": {
+          "type": "boolean"
+        },
+        "blanked_azimuth_start_deg": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 360.0
+        },
+        "blanked_azimuth_end_deg": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 360.0
+        }
+      }
+    },
+    "operational_limits": {
+      "type": "object",
+      "required": [
+        "duty_cycle_percent",
+        "operating_schedule",
+        "emergency_rf_kill_switch_gpio"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "duty_cycle_percent": {
+          "type": "number",
+          "exclusiveMinimum": 0.0,
+          "maximum": 100.0
+        },
+        "operating_schedule": {
+          "type": "string",
+          "minLength": 5
+        },
+        "emergency_rf_kill_switch_gpio": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40
+        }
+      }
+    }
+  }
+}
