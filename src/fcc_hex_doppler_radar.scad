@@ -2,6 +2,7 @@
 // RT-Hex X-Band (10.525 GHz) Doppler Weather Radar Dish & Tower Assembly
 // Designed for FireProve Tower Integration & FCC Form 442 Mechanical Spec
 // ============================================================================
+include <site_overrides.scad>
 
 $fn = 120;
 
